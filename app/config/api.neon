@@ -1,0 +1,40 @@
+services:
+	decorator.request.authentication:
+		class: Api\v2\Decorators\ApiKeyAuthDecorator
+		tags: [apitte.core.decorator: [priority: 1, type: handler.before]]
+
+extensions:
+	api: Apitte\Core\DI\ApiExtension
+	middleware: Contributte\Middlewares\DI\MiddlewaresExtension
+
+api:
+	debug: %debugMode%
+	catchException: true # Sets if exception should be catched and transformed into response or rethrown to output (debug only)
+	plugins:
+		Apitte\Core\DI\Plugin\CoreMappingPlugin:
+		Apitte\Core\DI\Plugin\CoreDecoratorPlugin:
+		Apitte\Middlewares\DI\MiddlewaresPlugin:
+		Apitte\Negotiation\DI\NegotiationPlugin:
+		Apitte\OpenApi\DI\OpenApiPlugin:
+			definition:
+				openapi: "3.0.3"
+				info:
+						title: B API
+						version: "2.0.0"
+				components:
+					securitySchemes:
+						ApiKeyAuth:        # arbitrary name for the security scheme
+							type: apiKey
+							in: query       # can be "header", "query" or "cookie"
+							name: apiKey  # name of the header, query parameter or cookie
+					security:
+						- ApiKeyAuth: []
+			swaggerUi:
+				panel: %debugMode%
+				expansion: list # list|full|none
+				filter: true # true|false|string
+				title: API
+		Apitte\Debug\DI\DebugPlugin:
+			debug:
+				panel: %debugMode%
+				negotiation: %debugMode%

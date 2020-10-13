@@ -1,0 +1,4 @@
+search:
+	controllers:
+		in: %appDir%/Api/v2/K1Applications/Controllers
+		implements: Apitte\Core\UI\Controller\IController
